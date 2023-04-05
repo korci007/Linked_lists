@@ -33,6 +33,7 @@ struct node *insert_node(struct node *first, int n){
     struct node *new_node = malloc(sizeof(struct node));
     if (new_node == NULL) {
         printf("Error inserting a new node\n");
+        delete_all(first);
         exit(EXIT_FAILURE);
     }
     new_node->value = n;
@@ -66,3 +67,58 @@ struct node *delete_by_value(struct node *list, int val){
     free(curr);
     return list;
 }
+
+// take list delete last element and return the list 
+static struct node *delete_last(struct node *list) {
+    struct node *curr, *prev;
+
+    for(curr = list, prev = NULL;
+        curr->next != NULL; prev = curr, curr = curr -> next)
+        ;
+    
+    if (!prev) {
+        list = NULL;
+    } else {
+        prev->next = NULL;
+    }
+    free(curr);
+    return list;
+}
+
+// take list and free up all allocated memory
+void delete_all(struct node *list) {
+    while(list)
+        list = delete_last(list);
+}
+
+// take a list and append a new node at the and and update it's value
+struct node *append_value(struct node *my_list, int num) {
+    struct node *new_node = malloc(sizeof(struct node));
+    
+    if (new_node == NULL) {
+        printf("Error allocating new memory\n");
+        delete_all(my_list);
+        exit(EXIT_FAILURE);
+    }
+    new_node->value = num;
+    new_node->next = NULL;
+
+    struct node *temp = my_list;
+
+    while(temp->next) {
+        temp = temp -> next;
+    } 
+    temp->next = new_node;
+    return my_list;
+}
+
+// take a list and search for a given value and return a pointer to the node holding it
+// or NULL if not found 
+static struct node *search_value(struct node *list, int val){
+    
+    while (list && list->value != val) {
+        list = list->next;
+    }
+    return list;
+}
+
