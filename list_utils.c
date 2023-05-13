@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "list_utils.h"
 
+#define safeFree(p) saferFree((void**) &(p))
+
 // count the number of nodes in the list
 size_t num_nodes(const struct node *current_node){
     size_t num = 0;
@@ -51,21 +53,21 @@ void print_list(const struct node *some_node){
 }
 
 // traverse the list and delete nodes one-by-one by freeing up memory
-struct node *delete_by_value(struct node *list, int val){
+void delete_by_value(struct node **list, int val){
     struct node *prev, *curr;
     
-    for (curr = list, prev = NULL; curr != NULL && curr->value != val; 
+    for (curr = *list, prev = NULL; curr != NULL && curr->value != val; 
         prev = curr, curr = curr->next)
         ;
     if (curr == NULL) { // value not found
-        return list;
+        return;
     } else if (prev == NULL) { // value is the first in the list
-        list = list->next;
+        *list = (*list)->next;
     } else {
         prev->next = curr->next;
     }
-    free(curr);
-    return list;
+    // free(curr);
+    safeFree(curr);
 }
 
 // take list delete last element and return the list 
@@ -81,7 +83,8 @@ static struct node *delete_last(struct node *list) {
     } else {
         prev->next = NULL;
     }
-    free(curr);
+    // free(curr);
+    safeFree(curr);
     return list;
 }
 
@@ -92,24 +95,43 @@ void delete_all(struct node *list) {
 }
 
 // take a list and append a new node at the and and update it's value
-struct node *append_value(struct node *my_list, int num) {
+// struct node *append_value(struct node *my_list, int num) {
+//     struct node *new_node = malloc(sizeof(struct node));
+    
+//     if (new_node == NULL) {
+//         printf("Error allocating new memory\n");
+//         delete_all(my_list);
+//         exit(EXIT_FAILURE);
+//     }
+//     new_node->value = num;
+//     new_node->next = NULL;
+
+//     struct node *temp = my_list;
+
+//     while(temp->next) {
+//         temp = temp -> next;
+//     } 
+//     temp->next = new_node;
+//     return my_list;
+// }
+
+void append_value(struct node **my_list, int num) {
     struct node *new_node = malloc(sizeof(struct node));
     
     if (new_node == NULL) {
         printf("Error allocating new memory\n");
-        delete_all(my_list);
+        delete_all(*my_list);
         exit(EXIT_FAILURE);
     }
     new_node->value = num;
     new_node->next = NULL;
 
-    struct node *temp = my_list;
+    struct node *temp = *my_list;
 
     while(temp->next) {
         temp = temp -> next;
     } 
     temp->next = new_node;
-    return my_list;
 }
 
 // take a list and search for a given value and return a pointer to the node holding it
@@ -120,5 +142,12 @@ static struct node *search_value(struct node *list, int val){
         list = list->next;
     }
     return list;
+}
+
+void saferFree(void **pp) {
+    if (pp != NULL && *pp != NULL) {
+        free(*pp);
+        *pp = NULL;
+    }
 }
 

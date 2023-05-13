@@ -18,10 +18,12 @@ int main(int argc, char **argv){
     printf("\n");
     printf("The number of nodes used: %zu\n", num_nodes(list));
     print_list(list);
-    list = append_value(list, 10);
+    append_value(&list, 10);
+    printf("The number of nodes used: %zu\n", num_nodes(list));
     print_list(list);
 
     delete_all(list);
+    
 
     return EXIT_SUCCESS;
 }

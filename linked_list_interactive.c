@@ -15,7 +15,8 @@ int main(void){
     printf("Value to delete: ");
     int value;
     scanf("%d", &value);
-    my_list = delete_by_value(my_list, value);
+    // my_list = delete_by_value(my_list, value);
+    delete_by_value(&my_list, value);
     print_list(my_list);
 
     return EXIT_SUCCESS;
