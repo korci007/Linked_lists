@@ -6,6 +6,9 @@ struct node {
     struct node *next;
 };
 
+// pointer to the last node to contain n or return NULL
+struct node *find_last(struct node *list, int n);
+
 // insert node to the begining of the list 
 struct node *insert_node(struct node *, int);
 

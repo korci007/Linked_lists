@@ -4,6 +4,19 @@
 
 #define safeFree(p) saferFree((void**) &(p))
 
+// pointer to the last node to contain n or return NULL
+struct node *find_last(struct node *list, int n){
+    struct node *last = NULL;
+    while(list != NULL) {
+        if (list->value == n) {
+            last = list;
+        }
+        list = list->next;
+    }
+    return last;
+}
+
+
 // count the number of nodes in the list
 size_t num_nodes(const struct node *current_node){
     size_t num = 0;
@@ -46,7 +59,7 @@ struct node *insert_node(struct node *first, int n){
 // traverse the list and print it's values
 void print_list(const struct node *some_node){
     while (some_node) {
-        printf("%d->", some_node->value);
+        printf("%p:%d->", (void*) some_node, some_node->value);
         some_node = some_node->next;
     }
     printf("NULL\n");
